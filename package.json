@@ -1,0 +1,22 @@
+{
+  "name": "quarry",
+  "version": "1.0.0",
+  "description": "Cursor-agent job hunt: setup, discover, stage, fill — submit stays off until you turn it on",
+  "type": "module",
+  "scripts": {
+    "extract": "node scripts/extract-experience.js",
+    "validate": "node scripts/validate-resume.js",
+    "render": "node scripts/render-resume.js",
+    "cover": "node scripts/render-cover-letter.js",
+    "build": "node scripts/validate-resume.js && node scripts/render-resume.js",
+    "auth:save": "python3 scripts/browser-auth.py save",
+    "auth:restore": "python3 scripts/browser-auth.py restore",
+    "auth:list": "python3 scripts/browser-auth.py list"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "pdf-lib": "^1.17.1",
+    "pdf-parse": "^1.1.1"
+  }
+}

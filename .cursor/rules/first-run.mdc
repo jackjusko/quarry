@@ -1,0 +1,16 @@
+---
+description: Force setup before hunt or fill when Quarry corpus is still a template
+alwaysApply: true
+---
+
+# Quarry first-run
+
+Before staging packets, opening ATS apply forms, or running job-hunt / tailor-resume:
+
+1. Check `pipeline/candidate-profile.md` for `YOUR_NAME`
+2. Check `pipeline/config.md` and `experience/tailor-policy.md` for `SETUP_INCOMPLETE`
+3. Check that `pipeline/.setup-complete` exists
+
+If any check fails: run the **setup** skill only. Do not invent profile data. Do not fill live applications.
+
+Submit remains off unless the user enables it for the session or packet.

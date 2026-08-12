@@ -1,0 +1,10 @@
+node_modules/
+output/*.json
+output/*.pdf
+!output/.gitkeep
+pipeline/browser-auth/*.json
+!pipeline/browser-auth/.gitkeep
+!pipeline/browser-auth/boards.json
+pipeline/.setup-complete
+pipeline/packets/*/
+!pipeline/packets/README.md

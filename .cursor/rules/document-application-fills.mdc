@@ -1,0 +1,41 @@
+---
+description: Always document how application fills and ATS blockers were solved so future packet fills reuse the fix.
+alwaysApply: true
+---
+
+# Document application-fill solutions
+
+When filling (or failing to fill) a job application in this repo, **always record the solution** before ending the turn.
+
+## Where to write
+
+1. **Reusable playbook:** [`.cursor/skills/apply-autofill/lessons.md`](../skills/apply-autofill/lessons.md) — append a dated entry under the ATS section (prefer ATS name + symptom, not employer name).
+2. **Board-specific:** update the matching file under [`.cursor/skills/apply-autofill/boards/`](../skills/apply-autofill/boards/) when the fix is ATS-wide (Greenhouse, Ashby, Lever, Simplify, …).
+3. **Packet handoff:** one line in `pipeline/packets/<id>/handoff.md` or `meta.json` notes if the quirk is role-specific.
+
+## What counts as “document it”
+
+Any non-obvious win or failure mode, including:
+
+- PDF upload / DataTransfer / chunk sequencing
+- React-select / typeahead / EEO field order quirks
+- Tab stomping, concurrent agents wiping forms, false “complete”
+- Listing gone / Cloudflare / wrong ATS URL recovery
+- Location hard-rule decisions from `pipeline/config.md`
+- Years-of-experience band choices that cleared a screen-out
+
+## Entry shape (copy this)
+
+```markdown
+### <ATS> — <symptom> (<YYYY-MM-DD>)
+- **Problem:** …
+- **Fix:** …
+- **Verify:** …
+- **Do not:** …
+```
+
+## Hard rules
+
+- Do **not** rely on chat memory alone — write it to `lessons.md` (and board playbook if reusable).
+- If you invent a new upload helper, oneshot chain, or CDP verify gate, document the exact command/order.
+- Prefer updating existing entries over duplicating; keep lessons actionable and short.
