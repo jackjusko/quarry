@@ -32,16 +32,81 @@ Use it if you want a hunt that runs to your rules, on your machine, without a bl
 
 What it does **not** do by default: click Submit, run unattended overnight, invent experience, or search boards you never turned on. Captchas, login walls, and leftover fields always stop the run so you can take over.
 
-## What a hunt looks like
+## How the system works
+
+Quarry is not a single button. It is a pipeline of steps, each with a name you will see in chat and in the files. Here is what those words mean.
+
+### Your rules (config and corpus)
+
+Before a hunt, Quarry reads a few plain-text files you filled during setup:
+
+- **Config** (`pipeline/config.md`) — what to look for: titles you want, titles to skip, where you will work, pay floor, which job sites are on, how many packets to stage per hunt, and whether submit is allowed.
+- **Profile** (`pipeline/candidate-profile.md`) — who you are for forms: name, email, phone, work authorization, optional address and EEO answers.
+- **Experience pool** (`experience/pool.md`) — your real work history. Employers, dates, outcomes. Every resume and cover letter is built from this file. If it is not in the pool, it should not appear on a resume.
+- **Tailor policy** (`experience/tailor-policy.md`) — how to shape each resume: which past roles always stay, how aggressively to weave posting keywords, which sections to keep.
+
+Think of these as the engine’s settings and fuel. Hunts and fills do not invent a new identity; they read these files.
+
+### Discovery
+
+**Discovery** is the search pass. When you say `run job hunt`, Quarry opens the job sites you enabled (LinkedIn, public career pages, Work at a Startup, pasted URLs, and so on) and gathers candidate postings. It only uses sources marked enabled in config. If a site needs a login, it uses a saved browser session when you have one.
+
+Discovery usually finds more roles than you will apply to. That is intentional. The next step ranks them.
+
+### Scoring
+
+Each posting gets a rough score against your config and pool: title match, skill overlap, location, pay, seniority, domain fit. Blocked titles or locations score zero and drop out. Quarry keeps the top scorers up to your limit (often about 15 per hunt; you can change that with `N=` in chat). Weaker matches can land on the tracker as **discovered** (seen, not prepared) without becoming a full packet yet.
+
+### Staging and packets
+
+**Staging** means: for a role that cleared the score bar, Quarry builds a complete application kit on disk and marks it ready for you to review. That kit is a **packet**.
+
+A packet is one folder under `pipeline/packets/`, named like a date plus company and role. Inside you typically get:
+
+- the job description
+- `meta.json` — company, title, URL, score, status
+- a tailored resume (JSON + PDF)
+- a cover letter (text + PDF)
+- draft answers for common form questions
+- `handoff.md` — short notes for you or for a later fill (why it scored, what to watch for)
+
+**Staged** means “materials are ready; nobody has filled or submitted the live form yet.” Staging is not applying. It is preparing.
+
+You can also stage specific URLs by pasting them in chat. Same idea: Quarry builds packets for those links without a full board crawl.
+
+### Review
+
+You open the packet folders and the tracker. Drop bad fits (`skip <company>`). Ask for a shorter cover letter or a re-tailored resume if something is off. This is the main quality gate. Quarry will not know a role is wrong for you unless you say so.
+
+### Fill
+
+**Fill** means Quarry opens the apply URL in Cursor’s browser and types your packet into the live form: uploads, contact fields, dropdowns, essay drafts when you prepared them. It reads your profile and the packet so it is not starting from a blank chat.
+
+Fill is separate from hunt on purpose. A hunt can stage many packets; you fill one when you are ready. By default, fill stops before Submit. **Filled** on the tracker means the form is populated and checked; it does not mean the employer has your application.
+
+### Tracker statuses
+
+`pipeline/tracker.md` is the running list. Common statuses:
+
+| Status | Meaning |
+| --- | --- |
+| `discovered` | Seen during search; not fully prepared as a packet (or left as a maybe) |
+| `staged` | Packet built; ready for your review |
+| `filled` | Form filled in the browser; not necessarily submitted |
+| `applied` | You (or an opt-in submit) actually sent it |
+| `skipped` | You dropped it (wrong fit, listing gone, etc.) |
+| `interview` | Process moved past apply |
+
+### Skills
+
+Under the hood, Cursor loads **skills** — instruction files in this project for setup, hunt, resume, cover letter, fill, interview prep, and follow-up. You do not open those to use Quarry. You type normal requests in chat; the assistant follows the matching skill. That is why `run job hunt` and `fill the packet for …` do consistent work instead of improvising each time.
+
+### What a hunt looks like (short)
 
 1. **Setup (once).** Type `run setup`. Answer one section at a time. You can edit the resulting files by hand later.
-
-2. **Discover.** Type `run job hunt`. Quarry stages packets under `pipeline/packets/` and updates `pipeline/tracker.md`.
-
+2. **Discover → score → stage.** Type `run job hunt`. Quarry writes packets under `pipeline/packets/` and updates the tracker.
 3. **Review.** Open the packets. Drop roles you do not want. Fix drafts before anyone fills a form.
-
 4. **Fill (when you ask).** Type `fill the packet for <company>`. Quarry fills the tailored application into the live form. By default it does **not** click Submit. You check the form, then submit yourself — or turn submit on for that packet or session (see [What to type](#what-to-type)).
-
 5. **Track.** After a real submit, tell it to mark the company applied (or skipped, or interview).
 
 ## What you do and what Quarry does
