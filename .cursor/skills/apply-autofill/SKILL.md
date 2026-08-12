@@ -37,7 +37,7 @@ Leftovers (captcha, login, missing profile data) always block submit, even when 
 
 1. [`pipeline/candidate-profile.md`](../../../pipeline/candidate-profile.md) — contact, auth, EEO
 2. [`pipeline/config.md`](../../../pipeline/config.md) — location allow-list, submit mode
-3. Packet: `pipeline/packets/<id>/` — `meta.json`, `form-answers.md`, `resume.pdf`, `cover-letter.pdf`
+3. Packet: `pipeline/packets/<id>/` — `meta.json`, `form-answers.md`, `resume.pdf`, `cover-letter.pdf`, **`essay-answers.md`** (when the form has essay prompts — see [Essay archive](#essay-archive-required-when-form-has-essays))
 4. Board playbook under [boards/](boards/) matching the ATS URL
 
 ## Hard rules
@@ -65,7 +65,7 @@ Before unlock + user report, run **all** of these:
 3. **Cross-check** snapshot + CDP against packet `form-answers.md` — every known answer accounted for; list anything still blank that the packet specifies.
 4. **If verification fails** — re-fill the gaps, re-run the gate, then report. Never report "filled" from fill intent alone.
 
-Only after the gate passes: unlock browser → update packet `handoff.md` / `meta.json` → append `lessons.md` if non-trivial → report to user with verification summary.
+Only after the gate passes: unlock browser → update packet `handoff.md` / `meta.json` → **write `essay-answers.md` if essays were filled** → append `lessons.md` if non-trivial → report to user with verification summary.
 
 ## Workflow
 
@@ -77,7 +77,8 @@ Only after the gate passes: unlock browser → update packet `handoff.md` / `met
 4. Fill **all** fields from candidate-profile + form-answers (contact → education → address → screening → EEO → consents)
 5. **Upload** resume + cover (Attachments below)
 6. **Pre-report verification gate** (above) — must pass before unlock/report
-7. Unlock; report leftovers + verification summary; submit only per [Submit policy](#submit-policy)
+7. **Essay archive** — if the form had essay textareas, write `essay-answers.md` (see [Essay archive](#essay-archive-required-when-form-has-essays))
+8. Unlock; report leftovers + verification summary; submit only per [Submit policy](#submit-policy)
 
 ## Attachments (required when fields exist)
 
@@ -105,6 +106,10 @@ Fallback only: **Enter manually** for cover text from `cover-letter.txt`; resume
 
 Selectors vary — if `#resume` / `#cover_letter` missing, find `input[type=file]` via CDP and adjust `apply.js`.
 
+### Ashby essays (React state)
+
+Ashby custom textareas often keep React state empty after CDP `.value=` even when text is visible → “Missing entry for required field”. Prefer `browser_type` (`clear: true`), then eval [`scripts/ashby-react-sync.js`](scripts/ashby-react-sync.js). Full order/quirks: [`boards/ashby.md`](boards/ashby.md). Essay prose: write-well (adequate length + application-essay theater bans).
+
 ## Field mapping
 
 | Form asks | Use |
@@ -120,7 +125,22 @@ Selectors vary — if `#resume` / `#cover_letter` missing, find `input[type=file
 | Gender / Hispanic / Race / Veteran / Disability | Profile EEO fields (or Decline) |
 | Disability CC-305 name + date | Profile: **Name** + **Date** from disability/CC-305 row — required after disability status select when the form shows CC-305 |
 | Salary | form-answers or `YOUR_SALARY_FLOOR` from config/profile |
-| Essays | form-answers + cover letter |
+| Essays | form-answers drafts → **`essay-answers.md`** after fill (prompt + submitted text) |
+
+## Essay archive (required when form has essays)
+
+When the application includes **essay / long-answer textareas** (not one-line screening fields):
+
+1. After fill + any ATS React sync, **CDP read-back** each filled essay (`textarea.value` + nearest prompt label from DOM).
+2. Write or update **`pipeline/packets/<id>/essay-answers.md`** — template: [`pipeline/packets/_template/essay-answers.md`](../../../pipeline/packets/_template/essay-answers.md).
+3. For each answered prompt: **Prompt** (full question text) + **Answer** (exact final text on the form).
+4. List **Skipped** prompts if the form says “answer only one of N” or optional essays left blank.
+5. Point `form-answers.md` at `essay-answers.md` (do not maintain two copies of long essay text).
+6. Mention `essay-answers.md` in packet `handoff.md` under autofill notes.
+
+**Purpose:** interview prep — same artifact tier as `cover-letter.txt` / `resume.pdf`. [`interview-prep`](../interview-prep/SKILL.md) reads this file from the packet.
+
+**When to skip:** no essay fields on the form (cover-only, yes/no screening only).
 
 ## Reach-out messages (required)
 

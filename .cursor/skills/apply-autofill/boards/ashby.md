@@ -7,11 +7,12 @@ Host: `jobs.ashbyhq.com`
 1. Open job URL with `newTab: true` → lock viewId
 2. Confirm the exact req still exists (Overview tab). If gone → skip packet; log in [`../lessons.md`](../lessons.md)
 3. Click **Application** tab (`…/application`)
-4. Fill from `candidate-profile.md` + packet form-answers (name/email/LinkedIn/phone → location typeahead → auth Yes/No → essays)
+4. Fill from `candidate-profile.md` + packet form-answers (name/email/LinkedIn/phone/GitHub → location typeahead → auth Yes/No → essays)
 5. **Resume upload:** DataTransfer onto `#_systemfield_resume` (see below). Cover letter often **absent** — keep packet PDF for reference only
 6. Re-verify after Ashby “Parsing your resume…” autofill settles (it usually preserves filled fields)
-7. Before unlock: confirm no “Your form needs corrections” banner — Ashby Yes/No can look `_active` in DOM while still flagged missing; re-click via `browser_click` if needed
-8. Unlock; submit only per apply-autofill submit policy
+7. Before unlock: confirm no “Your form needs corrections” banner — Ashby Yes/No can look `_active` in DOM while still flagged missing; re-click via `browser_click` if needed. For custom essay textareas, run React sync (below) if the banner still says Missing entry while text is visible. Yes/No pairs are **toggles** — do not double-click.
+8. If essays were filled: write packet `essay-answers.md` (see apply-autofill Essay archive).
+9. Unlock; submit only per apply-autofill submit policy
 
 ## Resume upload
 
@@ -27,7 +28,7 @@ node .cursor/skills/apply-autofill/scripts/prepare-upload-chunks.js \
 Then via `browser_cdp` `Runtime.evaluate` (sequential chunks **or** oneshot `__r` base64):
 
 ```js
-// after window.__r is full base64; RESUME_NAME from apply.js / chunk prep (default Resume.pdf):
+// after window.__r is full base64; resume name from prepare-upload-chunks (default Resume.pdf):
 (() => {
   function b64ToFile(b64, name, type) {
     const bin = atob(b64);
@@ -35,7 +36,7 @@ Then via `browser_cdp` `Runtime.evaluate` (sequential chunks **or** oneshot `__r
     for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
     return new File([bytes], name, { type });
   }
-  const resumeName = 'Resume.pdf'; // or basename from prepare-upload-chunks.js
+  const resumeName = 'Resume.pdf';
   const resume = b64ToFile(window.__r, resumeName, 'application/pdf');
   const input = document.getElementById('_systemfield_resume');
   const dt = new DataTransfer();
@@ -53,15 +54,31 @@ Optional top **Autofill from resume** file input is separate — uploading to `#
 
 ## Location typeahead
 
-Type city from profile/config → wait past **Loading…** → click exact option (e.g. `YOUR_LOCATION_CITY, State, Country`).
+Type city from profile/config → wait past **Loading…** → click exact option.
+
+**Order tip:** clicking sponsorship / years Yes/No buttons can clear an in-progress location typeahead — set location **after** those screeners, or re-set if cleared.
 
 ## Auth Yes/No
 
-Ashby uses button pairs with `_active_*` class + hidden checkboxes. Work auth from profile; sponsorship from profile. Confirm `_active` on the intended buttons after click. **Note:** clicking sponsorship buttons can clear an in-progress location typeahead — set location after sponsorship, or re-set if cleared.
+Ashby uses button pairs with `_active_*` class + hidden checkboxes. Work auth and sponsorship from profile. Confirm `_active` on the intended buttons after click.
 
 ## Custom radio groups
 
 Some reqs use **opacity-0** radio inputs — `browser_click` on the radio ref fails. Click the visible **label text** via CDP or snapshot-named element. Verify with `input[type=radio]:checked` count before unlock.
+
+## Custom essays (React state)
+
+**Critical:** bulk CDP `.value=` (or fill that only sets the DOM) on Ashby custom essay textareas can show text while React state stays empty → submit banner “Missing entry for required field” even though the textarea looks filled.
+
+**Fix:**
+
+1. `browser_type` each required essay with `clear: true` (prefer over raw `.value=`).
+2. Eval [`scripts/ashby-react-sync.js`](../scripts/ashby-react-sync.js) via `browser_cdp` `Runtime.evaluate` — walks `__reactFiber*`, calls `onChange` with the current value.
+3. Re-check: no “Your form needs corrections” / “Missing entry…” banner.
+
+Follow **write-well** for essay prose (brevity vs adequate length; application-essay theater bans). Use the form’s paragraph budget with substance, not telegrams.
+
+Some reqs show **three product-choice essays and say answer only one** — leave the other two blank.
 
 ## Custom diversity survey
 

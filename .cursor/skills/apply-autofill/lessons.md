@@ -152,6 +152,27 @@ Also keep ATS-wide procedures in [`SKILL.md`](SKILL.md) and [`boards/`](boards/)
 - **Verify:** Required survey fields set; `requiredEmpty` [].
 - **Do not:** fill optional essay triplet when form says answer **one** only.
 
+### Custom essays — React onChange sync (2026-08-12)
+
+- **Problem:** Custom essay textareas can show text in the DOM after CDP `.value=` / bulk fill while Ashby React state stays empty → “Missing entry for required field” / “Your form needs corrections” on submit.
+- **Fix:** `browser_type` with `clear: true` on each required essay, then `browser_cdp` eval [`.cursor/skills/apply-autofill/scripts/ashby-react-sync.js`](scripts/ashby-react-sync.js) (walk `__reactFiber*`, call `onChange`). Set location typeahead **after** Yes/No screeners (sponsorship/years clicks can wipe location). If the form offers three choice essays and says answer **one**, leave the other two blank. Prose: write-well essay length + application-essay theater bans.
+- **Verify:** Sync log lists essay field ids/lengths; no corrections banner; intended Yes/No `_active`; only the required essays filled.
+- **Do not:** trust visible textarea text alone; fill all three choice essays when the JD says one; skip React sync when Missing entry persists.
+
+### Yes/No buttons are toggles (2026-08-12)
+
+- **Problem:** Ashby Yes/No `onClick` is a **toggle** — a second native `.click()` clears `_active`. Fake React `onClick({preventDefault})` does not stick; `className.includes('_active')` is the gate.
+- **Fix:** After essays + React sync, **one** native `.click()` (or `browser_click`) on each intended Yes/No after `scrollIntoView`. Re-check `_active` before unlock.
+- **Verify:** Intended buttons `_active`; no corrections banner.
+- **Do not:** double-click Ashby Yes/No pairs; trust fiber `onClick` fakes without `_active` confirmation.
+
+### Essay archive — `essay-answers.md` (2026-08-12)
+
+- **Problem:** Submitted essay text lived only in `form-answers.md` or the browser — hard to find for interview prep.
+- **Fix:** After every fill with essay textareas, write `pipeline/packets/<id>/essay-answers.md` (prompt + exact answer from CDP read-back). Template: `pipeline/packets/_template/essay-answers.md`. Point `form-answers.md` at it; interview-prep reads it from the packet.
+- **Verify:** File exists alongside `resume.pdf` / `cover-letter.txt`; handoff mentions it.
+- **Do not:** duplicate long essay text in two packet files; skip archive when form had essays.
+
 ---
 
 ## Lever

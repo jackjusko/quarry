@@ -7,4 +7,6 @@ pipeline/browser-auth/*.json
 !pipeline/browser-auth/boards.json
 pipeline/.setup-complete
 pipeline/packets/*/
+!pipeline/packets/_template/
+!pipeline/packets/_template/**
 !pipeline/packets/README.md

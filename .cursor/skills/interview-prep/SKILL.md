@@ -17,6 +17,7 @@ If [`pipeline/config.md`](../../../pipeline/config.md) has `SETUP_INCOMPLETE` or
 - [`experience/pool.md`](../../../experience/pool.md)
 - [`pipeline/config.md`](../../../pipeline/config.md) — **Interview loops** section
 - Packet `handoff.md` if present (woven tech talking points)
+- Packet **`essay-answers.md`** if present — submitted application essays (prompt + answer); rehearse these stories first
 - User’s current skills level (default: ask once if unclear)
 
 ## Prose

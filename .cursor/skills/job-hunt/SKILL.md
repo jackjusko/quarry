@@ -81,7 +81,7 @@ For each selected role, create `pipeline/packets/<id>/` where
 
 3. **Resume:** follow tailor-resume → write `resume.json` → validate → render `resume.pdf`
 4. **Cover letter:** follow cover-letter skill → `cover-letter.txt` + render PDF
-5. **Form answers:** write `form-answers.md` (see template below)
+5. **Form answers:** write `form-answers.md` (see template below). **Essays:** draft bullets in `form-answers.md` at staging; after autofill, final text lives in **`essay-answers.md`** (see apply-autofill skill).
 6. **Handoff:** `handoff.md` with score rationale, weave notes, interview one-liners
 
 ### 4. Update tracker

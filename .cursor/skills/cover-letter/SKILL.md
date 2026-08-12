@@ -22,21 +22,21 @@ Follow **write-well** before drafting:
 2. Read [`../write-well/signs-of-ai-writing.md`](../write-well/signs-of-ai-writing.md) in full.
 3. Draft → cut filler → ship plain specific prose.
 
-Forbidden: “I am writing to apply,” mission-admiration fluff, buzzword salad, empty chatbot residue. Do **not** strip warmth from the close—see [Close tone](#close-tone). Follow **write-well** hollow-contrast and research-dump bans.
+Forbidden: “I am writing to apply,” mission-admiration fluff, buzzword salad, empty chatbot residue. Do **not** strip warmth from the close—see [Close tone](#close-tone). Follow **write-well** hollow-contrast bans: no “uncommon in hiring,” “uniquely positioned,” “in practice / not just policy,” or values-alignment sermons. Follow **write-well** research-dump bans: no “growth engine” / press-release metric stacks / “product shape and stack” wrap-ups. Name the experience; one plain tie to the posting is enough. For form essays, also follow **write-well** application-essay theater bans and use adequate length (not telegrams).
 
 ## Length and structure
 
-- **Medium by default:** ~220–320 words unless a form forces shorter.
+- **Medium by default:** ~220–320 words (about half a page to three-quarters) unless a form forces shorter. Prefer a full letter over a clipped note.
 - Structure:
   1. **Greeting** — required salutation ([Greeting](#greeting))
-  2. **Hook** — one concrete company-specific detail
+  2. **Hook** — one concrete company-specific detail (product, team problem, recent news, stack, customer)
   3. **Proof** — 1–2 outcomes from the pool mapped to the role
-  4. **Upsell** — short why-you-fit
+  4. **Upsell** — short why-you-fit (not a life story)
   5. **Close** — availability / next step, then formal sign-off ([Close tone](#close-tone))
 
 ## Greeting
 
-**Required on every letter:** open the body with a salutation.
+**Required on every letter:** open the body with a salutation, like a real letter—not a bare subject line into paragraph one.
 
 Default shapes:
 
@@ -44,17 +44,28 @@ Default shapes:
 - `Hi <Team or Hiring Team>,` when a named team is clearer
 - `Dear <Name>,` only when a real recruiter/hiring-manager name is known
 
-Put the greeting on its own line after the date / role subject line, before the first body paragraph.
+Rules:
+
+- Put the greeting on its own line after the date / role subject line, before the first body paragraph
+- Prefer company name over generic “Hi Hiring Manager,” when the company is known
+- Do not skip the greeting
+- Keep it short—one line, then a blank line, then the hook
 
 ## Prose density
 
-Write in full, complete sentences. One idea per sentence is fine; several short complete sentences beat one overloaded line. Keep write-well: cut filler, not grammar.
+Write in full, complete sentences. Do not telegraph with fragment stacks, em-dash catalogs, or resume-bullet rhythm.
+
+- One idea per sentence is fine; several short complete sentences beat one overloaded line
+- Connect proof with plain transitions (“Earlier…”, “Separately…”, “Beyond the resume…”) instead of compressing three jobs into one breath
+- Keep write-well: cut filler, not grammar. Expanding for clarity is required; padding is not
 
 ## Research bar
 
 Before writing, gather at least **one real detail** from the JD, company site, careers page, blog, or news.
 
-Use research to understand the product — do not paste orphan metrics or stack restatements into the opening. If research fails, say so in the handoff and anchor on the JD only — do not invent company facts.
+Use research to understand the product. Do **not** paste an orphan earnings metric or restatement of the stack into the opening just to prove you looked something up—see **write-well** research-dump bans. If a fact would not change what you say out loud, leave it out.
+
+If research fails, say so in the handoff and write a tighter letter anchored only on the JD — do not invent company facts.
 
 ## Inputs
 
