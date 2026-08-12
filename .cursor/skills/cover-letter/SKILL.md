@@ -93,6 +93,7 @@ node scripts/render-cover-letter.js path/to/cover-letter.txt path/to/cover-lette
 ## Voice
 
 - First person is OK in cover letters (unlike resume bullets)
+- **Always subject-first:** write “I am …” / “I have …” — never lead with bare trait phrases (“Comfortable with…”, “Authorized to…”, “Excited about…”). See `candidate-profile.md` prose preferences.
 - Sound like a competent professional in the configured occupation — not a brochure
 - Prefer specific verbs and named systems over soft claims
 - Slightly warm and human; full sentences and natural paragraph flow

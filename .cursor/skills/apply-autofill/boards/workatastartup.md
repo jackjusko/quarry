@@ -39,6 +39,7 @@ Do not hardcode identity values — read profile.
 | Rule | Value |
 | --- | --- |
 | Min length | 50 characters |
+| Subject voice | **Always “I am…”** — never bare trait openings (“Comfortable with…”, “Authorized to…”). See `candidate-profile.md` prose preferences |
 | Close | **Always** end with interest in talking (profile prose preference) |
 | Onsite/hybrid | Per config location policy + profile (local meet-in-person line when configured) |
 | Fully remote | No local coffee line unless profile says so |

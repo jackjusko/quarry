@@ -314,6 +314,13 @@ Also keep ATS-wide procedures in [`SKILL.md`](SKILL.md) and [`boards/`](boards/)
 - **Verify:** Application submitted confirmation on job page when user requested submit.
 - **Do not:** assume packet `resume.pdf` attached unless selected on resume step; skip numeric screening fields.
 
+### SDUI loader hang (empty modal)
+
+- **Problem:** Easy Apply modal opens (“Apply to …”, 0% progress) but **no form fields ever render** — `.artdeco-loader` stays visible 20s+; CDP finds zero `input`/`textarea` in the modal. May be posting-specific or transient SDUI failure (other Easy Apply postings can work the same day).
+- **Fix:** None in-session. **Fallback:** contact email from posting/JD with packet PDFs, or human retry after browser cookie refresh / different LinkedIn session.
+- **Verify:** Modal shows contact/resume/screening steps with inputs before reporting filled.
+- **Do not:** click **Next** on empty 0% modal and report filled; assume Easy Apply works because another posting did earlier.
+
 ---
 
 ## Email / non-ATS
