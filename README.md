@@ -22,7 +22,7 @@ Use it if you want a hunt that runs to your rules, on your machine, without a bl
 
 1. **Discover jobs that match what you want.** You say `run job hunt`. Quarry searches only the sites you enabled, scores openings against your titles, location, pay floor, and other rules, and keeps the strong matches. It does not wander onto boards you never turned on.
 
-2. **Build a tailored application for each match.** For every role it keeps, it stages a **packet** — one folder with the posting, a role-targeted resume and cover letter (PDFs included), draft form answers, and a short handoff note. Materials come from your real work history (`experience/pool.md`) and your tailor rules. It does not invent employers or dates. You can ask it to rewrite a resume or cover letter for a packet.
+2. **Build a tailored application for each match.** For every role it keeps, it stages a **packet** — one folder with the posting, a role-targeted resume and cover letter (PDFs included), draft form answers, and a short handoff note. Cover letters and long form essays follow **write-well** (plain prose rules built into Quarry — see [How writing works](#how-writing-works-write-well)). Materials come from your real work history (`experience/pool.md`) and your tailor rules. It does not invent employers or dates. You can ask it to rewrite a resume or cover letter for a packet.
 
 3. **Fill those applications in the browser.** When you ask, it opens the apply page in Cursor’s browser, uploads the tailored resume and cover letter, and fills contact fields, work-auth answers, dropdowns, and other questions from your profile and packet. Submit stays off unless you turn it on. It checks the page before calling a form filled. It also keeps notes on common application hosts (Greenhouse, Lever, Ashby, and others), so the next fill on that host is less of a re-teach.
 
@@ -73,6 +73,43 @@ A packet is one folder under `pipeline/packets/`, named like a date plus company
 **Staged** means “materials are ready; nobody has filled or submitted the live form yet.” Staging is not applying. It is preparing.
 
 You can also stage specific URLs by pasting them in chat. Same idea: Quarry builds packets for those links without a full board crawl.
+
+### How writing works (write-well)
+
+AI chat defaults to brochure language: hollow “not X but Y” contrasts, press-release openers, values sermons, and telegram-short essay answers. Quarry forces the opposite for anything a hiring manager will read as prose.
+
+**write-well** is a skill in this project. Before drafting a cover letter, application essay, follow-up, or other substantial prose, the assistant is required to read its companions (including Orwell’s *Politics and the English Language* and a field guide to common AI writing patterns), then draft and cut until the text is concrete and speakable. Short one-line form fields (salary, yes/no, work auth) stay short. Letters and essays get full sentences and enough length to prove the point — filler is cut; substance is not.
+
+#### Cover letters
+
+Default length is about **220–320 words** (roughly half a page to three-quarters), unless the form forces shorter. Structure:
+
+1. **Greeting** — a real salutation (`Hi <Company> Team,` or a named contact when you have one)
+2. **Hook** — why you want *this* role, with at most a short clause of company context (not a Wikipedia blurb or earnings dump)
+3. **Proof** — one or two concrete outcomes from your experience pool mapped to the job
+4. **Upsell** — a short why-you-fit paragraph, not a life story
+5. **Close** — interest in talking, thanks, how to reach you, then `Best,` and your full name
+
+Letters use full sentences and natural paragraphs. They must not open with “I am writing to apply,” invent company facts, or pad with “uniquely positioned” / mission-admiration theater. One real detail from the posting or company site is enough research; orphan metrics glued on to prove you “researched” are banned.
+
+#### Application essays and long form answers
+
+When a form asks “tell us about a time,” “why this product,” or similar — and especially when it gives a paragraph budget — Quarry uses the space with substance, not a compressed Slack one-liner and not AI hero-arc padding.
+
+Typical shape when the form allows several paragraphs:
+
+1. **Context** — team and situation
+2. **What you noticed** — a concrete symptom (wrong booking, broken handoff, missed deadline), not “saw the pain”
+3. **What you did** — specific actions, tradeoffs, what you shipped
+4. **Outcome** — what changed, in observable terms
+
+Banned patterns include “not because a PM asked, but because…,” countdown stakes used as theater, “X rather than Y” moral closers, and mirroring the employer’s job description back at them. The speak-aloud test: if you would not say the sentence to a teammate who asked what happened that week, rewrite it.
+
+Drafts often live in the packet’s form-answers file before fill. After essays go into a live form, Quarry can archive prompt + submitted text in `essay-answers.md` for interview prep later.
+
+#### Follow-ups and other prose
+
+Recruiter notes, LinkedIn pings, and thank-yous also go through write-well: short, specific, no guilt trips or passion-about-the-mission filler. Resume bullets stay tight (that is the tailor-resume skill); write-well’s “use the paragraph budget” rule is for letters and essays, not for bullet stacks.
 
 ### Review
 
@@ -230,4 +267,4 @@ Respect employer and application-site terms of use. You are responsible for the 
 
 ## Credits
 
-The **write-well** skill uses George Orwell’s essay [*Politics and the English Language*](https://www.orwellfoundation.com/the-orwell-foundation/orwell/essays-and-other-works/politics-and-the-english-language/) (Horizon, 1946). Credit to Orwell for that part of the prose guidance. The rest of Quarry is separate work.
+**write-well** uses George Orwell’s essay [*Politics and the English Language*](https://www.orwellfoundation.com/the-orwell-foundation/orwell/essays-and-other-works/politics-and-the-english-language/) (Horizon, 1946), plus a compiled field guide to common AI writing patterns. Cover letters, essays, and other long prose in Quarry are written under those rules. Credit to Orwell for that part of the guidance. The rest of Quarry is separate work.
