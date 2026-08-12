@@ -2,184 +2,84 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-Cursor-agent job hunt: discover roles, stage application packets, fill forms on request. **Submit stays off until you turn it on.**
+Quarry is a folder of files you open in [Cursor](https://cursor.com), a desktop app with a chat panel. You type what you want in that chat. An **assistant** (the AI in Cursor) runs a job search on your computer: finds roles that match your rules, drafts a resume and cover letter for each one, and fills the online application form when you ask.
 
-Not a web app. Not a SaaS. Clone the repo, open it in Cursor, and the agent works on your machine.
+It is not a website you log into. Nothing in this project sends your profile or applications to a Quarry server. Your contact info, work history, and job-site logins stay on your machine.
 
-Works for any occupation you configure in setup — nursing, trades, product, design, research, operations, software, and the rest.
+You can use it for any kind of work you set during setup — nursing, trades, product, design, research, operations, software, and so on.
 
-**New to Cursor?** Start with [docs/getting-started.md](docs/getting-started.md).
+**New to Cursor?** The click-by-click install is in [docs/getting-started.md](docs/getting-started.md). This page explains what Quarry is and how a search goes.
 
-## Table of contents
+## What a search looks like
 
-1. [It learns boards after the first fill](#it-learns-boards-after-the-first-fill)
-2. [Agent vs you](#agent-vs-you)
-3. [Who it is for](#who-it-is-for)
-4. [Requirements](#requirements)
-5. [Model and cost](#model-and-cost)
-6. [How it works](#how-it-works)
-7. [Install](#install)
-8. [First run (setup)](#first-run-setup)
-9. [Adapting to your field](#adapting-to-your-field)
-10. [Daily workflow](#daily-workflow)
-11. [How to prompt Quarry](#how-to-prompt-quarry)
-12. [Skills](#skills)
-13. [Repo layout](#repo-layout)
-14. [Config reference](#config-reference)
-15. [Packets](#packets)
-16. [Application fill](#application-fill)
-17. [Browser sessions](#browser-sessions)
-18. [Privacy](#privacy)
-19. [FAQ](#faq)
-20. [Disclaimer](#disclaimer)
-21. [Credits](#credits)
+1. **Setup (once).** You type `run setup` in chat. The assistant asks, one section at a time: what work you want, which job sites to search, your name and contact answers, your work history, and how you want resumes adjusted for each role. You can edit the resulting files by hand later if you prefer.
 
-## It learns boards after the first fill
+2. **Hunt.** You type `run job hunt`. The assistant looks only at the sites you turned on. It scores openings against your titles, location, pay floor, and other rules, then builds a **packet** for each strong match. A packet is a folder for one job. It holds the posting, a tailored resume and cover letter, draft answers for common form questions, and a short handoff note.
 
-Quarry ships notes for common ATS boards: Greenhouse, Lever, Ashby, Simplify, Workable, Jobvite, Teamtailor, Work at a Startup, and related playbooks under `.cursor/skills/apply-autofill/`.
+3. **Review.** You open the packets under `pipeline/packets/` and check the status list in `pipeline/tracker.md`. Drop roles you do not want. Fix anything wrong in the drafts before anyone fills a form.
 
-The first time the agent fills a board (or hits a new quirk), it writes that into `lessons.md` and the matching `boards/*.md`. The next application on that board uses those notes. You should not have to re-teach react-select, file uploads, or EEO widgets.
+4. **Fill (when you ask).** You type something like `fill the packet for <company>`. The assistant opens the application in Cursor’s built-in browser and fills the fields it can. By default it does **not** click Submit or Apply. You look at the form, then submit yourself — or you turn submit on for that packet or session (see [What to type](#what-to-type)).
 
-The completeness check still runs every time. If the agent missed a quirk, say:
+5. **Track.** After a real submit, tell the assistant to mark the company applied (or skipped, or interview). The tracker stays the running list of where you are.
 
-```text
-remember this for the next fill
-```
+Captchas, login walls, and leftover fields the assistant cannot answer always stop the run. You handle those, then say continue.
 
-## Agent vs you
+## What you do and what the assistant does
 
-| Agent | You |
-| --- | --- |
-| Setup interview | Install Cursor, answer setup |
-| Discovery and scoring | Review staged packets |
-| Resume and cover drafts | Keep experience truthful |
-| Optional form fill | Click Submit unless you enabled apply |
-| Tracker updates | Sign in / solve captcha when asked |
-| Append fill lessons | Steer with chat prompts |
+You install Cursor, answer setup, keep your work history truthful, sign in on job sites when asked, solve captchas, review packets, and decide when something is ready to send. Every application is yours.
 
-Default: **review**. Fill does not submit.
+The assistant writes hunt config and materials from what you gave it, stages packets, fills forms when you ask, updates the tracker when you say so, and writes down quirks it hits on common application hosts (Greenhouse, Lever, Ashby, and others). The next fill on that host can reuse those notes. You should not have to re-explain the same dropdown or upload every time. If it misses a quirk, say `remember this for the next fill`.
 
-## Who it is for
+## What you need
 
-People who use Cursor and want an agent to run a structured job search. Not software-only. Career change, licensed trades, PM, design, research, nursing, engineering — setup writes the occupation.
+- **Cursor** — the app where you open this folder and chat. A Cursor Pro plan (about $20/month; check current pricing) is enough for this workflow. In chat model settings, pick **Composer 2.5** at **regular** speed. That model can run setup, hunt, resume, cover letter, and fill. Cursor currently prices those tokens cheaply; prices can change.
+- **Node.js (LTS)** — builds resume and cover letter PDFs.
+- **Python 3** — saves and restores job-site login sessions so you are not signing in from scratch after every cookie wipe.
 
-## Requirements
+Step-by-step install (including ZIP download if you do not use git): [docs/getting-started.md](docs/getting-started.md).
 
-- [Cursor](https://cursor.com)
-- Node.js LTS (resume/cover PDFs)
-- Python 3 (save/restore job-board logins)
-- Git optional (ZIP download works)
-
-No job-board API keys. Browser tools in Cursor handle discovery and fill.
-
-## Model and cost
-
-**Composer 2.5** at **regular** speed can run setup, hunt, tailor, cover, and fill. A hunt still takes many agent turns (each packet is several steps).
-
-On Cursor’s current pricing, Composer 2.5 tokens are cheap because Cursor subsidizes them, so a **$20/month** plan can run this a lot. Cursor’s prices can change. Bigger or slower models are optional, not required.
-
-## How it works
-
-```mermaid
-flowchart LR
-  setup[setup] --> corpus[config profile pool]
-  corpus --> hunt[job-hunt]
-  hunt --> packets[packets]
-  packets --> review[you review]
-  review --> fill[fill on request]
-  fill --> submit[you submit or enable submit]
-  submit --> tracker[tracker]
-```
-
-1. Setup writes config, profile, pool, tailor policy, and discovery logins.
-2. Job-hunt discovers and stages packets (enabled sources only).
-3. You review `pipeline/packets/` and `pipeline/tracker.md`.
-4. You ask to fill a packet. Completeness check runs.
-5. You submit — or you turn submit on for a packet/session.
-6. Tracker marks applied / skipped / interview.
-
-## Install
-
-```bash
-git clone https://github.com/jackjusko/quarry.git
-cd quarry
-npm install
-```
-
-Open the folder in Cursor (**File → Open Folder**).
-
-Never used Cursor? See [docs/getting-started.md](docs/getting-started.md) (ZIP download, Node, Python, Composer 2.5).
-
-## First run (setup)
-
-In Cursor chat:
+When the folder is open in Cursor, type:
 
 ```text
 run setup
 ```
 
-The agent asks, one section at a time:
+Do not run a hunt or fill forms until setup finishes. The assistant will refuse if placeholders like your name are still missing.
 
-1. Occupation and hunt config (titles, location, comp, scoring)
-2. Which sites to search — and login + cookie save for boards that need it
-3. Candidate profile (EEO/address/DOB optional)
-4. Experience pool (resume paste or PDF extract, then role pass)
-5. Resume tailor policy (core roles, weave, sections)
+## The files that matter
 
-You can hand-edit the markdown files instead. Setup replaces template markers (`YOUR_NAME`, `SETUP_INCOMPLETE`, fictional Example Org stub).
+You do not need to memorize the whole tree. These are the ones you will open or edit:
 
-## Adapting to your field
+| File or folder | What it is for |
+| --- | --- |
+| `pipeline/config.md` | Hunt rules: titles, location, pay, which sites to search, whether submit is allowed |
+| `pipeline/candidate-profile.md` | Name, contact, work authorization, optional address and EEO answers for forms |
+| `experience/pool.md` | Your real work history — employers, dates, outcomes. Source of truth for resumes |
+| `experience/tailor-policy.md` | Which roles always appear, how to weave keywords, which resume sections to keep |
+| `pipeline/tracker.md` | Status of each job (staged, filled, applied, skipped, interview) |
+| `pipeline/packets/` | One folder per staged application |
 
-Setup writes occupation, titles, scoring weights, tailor policy, and discovery sources. Job-hunt will not search LinkedIn unless you enabled it and signed in. It will not look for “Software Engineer” unless you said so.
+Login session files under `pipeline/browser-auth/` stay on your machine and are not meant for public GitHub. Packet contents and generated PDFs are also kept out of normal commits.
 
-To change target mid-search:
+## What to type
 
-```text
-Re-run setup for the hunt config only.
-```
-
-or
-
-```text
-Change location allow-list to … and continue.
-```
-
-## Daily workflow
-
-```text
-run job hunt
-```
-
-Review packets. Then:
-
-```text
-fill the packet for <company>
-```
-
-That **does not** submit. You click Submit in the browser, then:
-
-```text
-mark <company> applied
-```
-
-If a board logged you out:
-
-```text
-restore my job board logins
-```
-
-## How to prompt Quarry
-
-The engine is the skills in `.cursor/skills/`. You steer them in chat. There is no full-auto loop that discovers, fills, and submits everything unattended. Captcha, login, and leftovers need you.
+The assistant follows instructions stored as **skills** inside this project. You steer them in chat. There is no full-auto loop that discovers, fills, and submits everything while you sleep.
 
 ### Hunt
 
 ```text
 run job hunt
+```
+
+Finds roles and builds packets from your enabled sources. Override count or focus when you need to:
+
+```text
 run job hunt, N=10, focus: remote registered nurse in Texas
 stage these URLs: https://…
 skip LinkedIn this run, public ATS only
 ```
+
+(“ATS” means the employer’s online application system — Greenhouse, Lever, and similar hosts.)
 
 ### Materials
 
@@ -188,14 +88,14 @@ tailor the resume for packet …
 rewrite the cover letter, shorter
 ```
 
-### Fill (review — default)
+### Fill (default — review only)
 
 ```text
 fill the packet for <company>
 fill the next staged packet. Do not submit.
 ```
 
-### Fill and submit (opt-in)
+### Fill and submit (only when you opt in)
 
 ```text
 fill the packet for <company> and submit if the completeness check passes
@@ -204,110 +104,44 @@ submit this form
 turn submit off
 ```
 
-Leftovers, captcha, and login walls always stop the run, even when submit is on. Completeness check always runs before submit.
+Even with submit on, leftovers, captcha, and login walls stop the run. The assistant must pass a completeness check (scroll the page, read fields back, confirm uploads) before it may click Submit.
 
-### Config and memory
+### Status and memory
 
 ```text
-change location allow-list to …
-add Indeed as a discovery source and save the login
+mark <company> applied
+skip <company>, reason: …
+restore my job board logins
 remember this for the next fill
 ```
 
-## Skills
+Use `restore my job board logins` after Cursor clears cookies. Use `remember this…` when a form quirk should stick for the next fill on that host.
 
-| Skill | Use |
-| --- | --- |
-| `setup` | First-run interview; install deps |
-| `job-hunt` | Discover and stage packets |
-| `tailor-resume` | Role-targeted resume JSON + PDF |
-| `cover-letter` | Cover letter + PDF |
-| `apply-autofill` | Fill ATS forms (ask explicitly) |
-| `interview-prep` | Stories / drills from pool + config |
-| `follow-up` | Follow-up drafts |
-| `write-well` | Prose rules for letters and docs |
+## Limits
 
-## Repo layout
+- **Submit is off unless you turn it on.** Typing `fill` never clicks Submit by itself.
+- **No inventing.** Dates, employers, and outcomes must come from your experience pool. If the assistant makes something up, tell it to remove it.
+- **Completeness before “filled.”** The assistant must not call a form done until the check above passes. If you still see blank required fields, paste:
 
 ```text
-experience/          pool.md, tailor-policy.md
-pipeline/
-  config.md          hunt filters, sources, submit mode
-  candidate-profile.md
-  tracker.md
-  browser-auth.md
-  packets/           staged applications
-  playbooks/         e.g. LinkedIn discovery
-schemas/             resume JSON schema
-scripts/             validate, render, extract, browser-auth
-.cursor/skills/      agent skills + ATS boards + lessons
-docs/getting-started.md
+This is not complete. Re-run the verification gate, list empty required fields, and fill them. Do not say filled until the check passes.
 ```
 
-## Config reference
+More corrections (wrong tab, listing gone, already submitted): [docs/getting-started.md](docs/getting-started.md#if-something-is-wrong).
 
-| File | Controls |
-| --- | --- |
-| `pipeline/config.md` | Occupation, titles, location, comp, scoring, enabled sources, **submit mode** (`review` default / `when-verified`) |
-| `pipeline/candidate-profile.md` | Name, contact, auth, optional EEO/address |
-| `experience/pool.md` | Employers, dates, outcomes |
-| `experience/tailor-policy.md` | Core vs optional roles, weave, must-include sections |
-| `pipeline/browser-auth.md` | Which boards are logged in / saved |
-
-## Packets
-
-Naming: `YYYYMMDD-<company-slug>-<role-slug>`
-
-Each packet should include: `meta.json`, `job-description.md`, `resume.json` / `resume.pdf`, `cover-letter.txt` / `cover-letter.pdf`, `form-answers.md`, `handoff.md`.
-
-Statuses: `discovered` · `staged` · `filled` · `applied` · `skipped` · `interview`
-
-## Application fill
-
-- Cursor embedded browser + board playbooks + `lessons.md` (standing memory)
-- PDF upload via DataTransfer chunks (see apply-autofill skill)
-- Pre-report verification gate (scroll, read-back, uploads) before “filled”
-- **Submit off by default** — see [How to prompt Quarry](#how-to-prompt-quarry)
-
-v1 fill playbooks focus on common US ATS hosts (Greenhouse, Lever, Ashby, and the boards under `boards/`). Other sites may still get a staged packet; fill quality varies until lessons accumulate.
-
-## Browser sessions
-
-```bash
-python3 scripts/browser-auth.py save linkedin
-python3 scripts/browser-auth.py restore all
-python3 scripts/browser-auth.py list
-```
-
-Cookie JSON under `pipeline/browser-auth/` is gitignored. After a Cursor cookie wipe, restore, then reload the tab.
-
-LinkedIn: use email + password. Google sign-in often hangs in the Cursor browser.
+- **You stay in the loop.** Sign-ins, captchas, and odd leftover questions (SSN, custom essays, samples) need you. Prompt one step at a time when something blocks.
 
 ## Privacy
 
-Filled profile, pool, packets, and auth JSON stay on your machine. Do not push a public fork of a live hunt.
+Filled profile, pool, packets, and saved login files stay on your computer. Do not push a public copy of a live hunt to GitHub.
 
-Gitignored: `pipeline/browser-auth/*.json`, `pipeline/.setup-complete`, packet contents (see `.gitignore`), `output/*.pdf`.
+## Cost
 
-## FAQ
-
-**Is this a website?** No. Local Cursor project.
-
-**Does it auto-apply?** No, unless you say so. Default is fill and stop.
-
-**Can it run the whole hunt unattended?** No. You will sign in, solve captchas, and check leftovers. Prompt one step at a time.
-
-**Which model?** Composer 2.5 regular is enough. See [Model and cost](#model-and-cost).
-
-**Setup not triggering?** Say `run setup`. Check for `YOUR_NAME` in the profile or missing `pipeline/.setup-complete`.
-
-**Agent said filled but fields are blank?** Paste: `This is not complete. Re-run the verification gate, list empty required fields, and fill them.`
-
-More corrections: [docs/getting-started.md](docs/getting-started.md#if-something-is-wrong).
+Composer 2.5 at regular speed is enough. A hunt still takes many chat turns (each packet is several steps). On Cursor’s current pricing, that model’s tokens are cheap enough that a $20/month plan can run this often. Cursor’s prices can change. Bigger or slower models are optional, not required.
 
 ## Disclaimer
 
-Respect employer and ATS terms of use. You are responsible for the accuracy of claims on your materials and for any submit you enable. The agent fills; you own the application.
+Respect employer and application-site terms of use. You are responsible for the accuracy of claims on your materials and for any submit you enable. The assistant fills; you own the application.
 
 ## Credits
 
