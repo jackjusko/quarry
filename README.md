@@ -2,37 +2,61 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-Quarry is a folder of files you open in [Cursor](https://cursor.com), a desktop app with a chat panel. You type what you want in that chat. An **assistant** (the AI in Cursor) runs a job search on your computer: finds roles that match your rules, drafts a resume and cover letter for each one, and fills the online application form when you ask.
+## What Quarry is
 
-It is not a website you log into. Nothing in this project sends your profile or applications to a Quarry server. Your contact info, work history, and job-site logins stay on your machine.
+Quarry is a job-search project you run on your own computer. You download this folder, open it in [Cursor](https://cursor.com) (a desktop app with a chat panel), and talk to an **assistant** — the AI inside Cursor — in plain English. That assistant finds roles that match rules you set, builds application materials for each one, and can fill the employer’s online form when you ask.
 
-You can use it for any kind of work you set during setup — nursing, trades, product, design, research, operations, software, and so on.
+It is a folder of instructions and your data, not a website or a SaaS product. Nothing here sends your profile or applications to a Quarry server. Your contact info, work history, job-site logins, and staged applications stay on your machine.
 
-**New to Cursor?** The click-by-click install is in [docs/getting-started.md](docs/getting-started.md). This page explains what Quarry is and how a search goes.
+You tell it what kind of work you want during setup. Nursing, trades, product, design, research, operations, software — the same project works; the titles, sites, and scoring change with your answers.
+
+**New to Cursor?** Install steps are in [docs/getting-started.md](docs/getting-started.md). Keep reading here for what Quarry does and why someone would use it.
+
+## Why you would use it
+
+A serious job search is repetitive: scan the same boards, decide if a posting fits, rewrite the resume again, write another cover letter, type the same name and work-auth answers into another Greenhouse or Lever form, then track what you sent. That work stacks up across dozens of roles.
+
+Quarry takes the mechanical loop. You keep judgment: which roles are real fits, whether the drafts are honest, when to hit Submit, and how to handle captchas, logins, and odd leftover questions. The assistant does the searching, drafting, packet filing, and form filling on request — on your laptop, from files you can open and edit.
+
+Use it if you already pay for Cursor (or are willing to) and want a structured hunt you control, not a black-box “auto-apply” service that invents bullets and fires applications without you.
+
+## What it can do
+
+Core capabilities, roughly from the heaviest lift to the lighter ones:
+
+1. **Fill application forms in the browser.** When you ask, the assistant opens the job’s apply page in Cursor’s built-in browser, uploads your resume and cover letter, and fills contact fields, work-auth answers, dropdowns, and other questions from your profile and packet. Submit stays off unless you turn it on. It checks the page before calling a form “filled.” It also keeps notes on common application hosts (Greenhouse, Lever, Ashby, and others), so the next fill on that host is less of a re-teach.
+
+2. **Find roles and stage full application packets.** You say `run job hunt`. It searches only the sites you enabled, scores openings against your titles, location, pay floor, and other rules, and builds a **packet** for each strong match. A packet is one folder per job: the posting, tailored resume and cover letter (including PDFs), draft form answers, and a short handoff note. You review before anything is sent.
+
+3. **Tailor a resume and cover letter per role from one work-history file.** Your real employers, dates, and outcomes live in one place (`experience/pool.md`). For each packet, the assistant builds a role-targeted resume and a medium cover letter from that pool and your tailor rules — without inventing jobs or dates. You can ask it to rewrite either piece.
+
+4. **Set the hunt up once for your field.** Setup is a short interview in chat: occupation and titles, which boards to search (and login when a site needs it), contact and optional EEO answers, work history, and how resumes should be shaped. After that, hunts follow your config instead of assuming you are a software engineer.
+
+5. **Track status and help after you apply.** A tracker lists each role (staged, filled, applied, skipped, interview). On request, the assistant can draft follow-up notes or interview prep from your experience pool. Those are optional extras, not the main loop.
+
+What it does **not** do by default: click Submit, run unattended overnight, invent experience, or search boards you never turned on. Captchas, login walls, and leftover fields always stop the run so you can take over.
 
 ## What a search looks like
 
-1. **Setup (once).** You type `run setup` in chat. The assistant asks, one section at a time: what work you want, which job sites to search, your name and contact answers, your work history, and how you want resumes adjusted for each role. You can edit the resulting files by hand later if you prefer.
+1. **Setup (once).** Type `run setup`. Answer one section at a time. You can edit the resulting files by hand later.
 
-2. **Hunt.** You type `run job hunt`. The assistant looks only at the sites you turned on. It scores openings against your titles, location, pay floor, and other rules, then builds a **packet** for each strong match. A packet is a folder for one job. It holds the posting, a tailored resume and cover letter, draft answers for common form questions, and a short handoff note.
+2. **Hunt.** Type `run job hunt`. The assistant stages packets under `pipeline/packets/` and updates `pipeline/tracker.md`.
 
-3. **Review.** You open the packets under `pipeline/packets/` and check the status list in `pipeline/tracker.md`. Drop roles you do not want. Fix anything wrong in the drafts before anyone fills a form.
+3. **Review.** Open the packets. Drop roles you do not want. Fix drafts before anyone fills a form.
 
-4. **Fill (when you ask).** You type something like `fill the packet for <company>`. The assistant opens the application in Cursor’s built-in browser and fills the fields it can. By default it does **not** click Submit or Apply. You look at the form, then submit yourself — or you turn submit on for that packet or session (see [What to type](#what-to-type)).
+4. **Fill (when you ask).** Type `fill the packet for <company>`. The assistant fills what it can. By default it does **not** click Submit. You check the form, then submit yourself — or turn submit on for that packet or session (see [What to type](#what-to-type)).
 
-5. **Track.** After a real submit, tell the assistant to mark the company applied (or skipped, or interview). The tracker stays the running list of where you are.
-
-Captchas, login walls, and leftover fields the assistant cannot answer always stop the run. You handle those, then say continue.
+5. **Track.** After a real submit, tell it to mark the company applied (or skipped, or interview).
 
 ## What you do and what the assistant does
 
-You install Cursor, answer setup, keep your work history truthful, sign in on job sites when asked, solve captchas, review packets, and decide when something is ready to send. Every application is yours.
+You install Cursor, answer setup, keep the work history truthful, sign in on job sites when asked, solve captchas, review packets, and decide when something is ready to send. Every application is yours.
 
-The assistant writes hunt config and materials from what you gave it, stages packets, fills forms when you ask, updates the tracker when you say so, and writes down quirks it hits on common application hosts (Greenhouse, Lever, Ashby, and others). The next fill on that host can reuse those notes. You should not have to re-explain the same dropdown or upload every time. If it misses a quirk, say `remember this for the next fill`.
+The assistant writes config and materials from what you gave it, stages packets, fills forms when you ask, updates the tracker when you say so, and records form quirks for the next fill on that host. If it misses a quirk, say `remember this for the next fill`.
 
 ## What you need
 
-- **Cursor** — the app where you open this folder and chat. A Cursor Pro plan (about $20/month; check current pricing) is enough for this workflow. In chat model settings, pick **Composer 2.5** at **regular** speed. That model can run setup, hunt, resume, cover letter, and fill. Cursor currently prices those tokens cheaply; prices can change.
+- **Cursor** — the app where you open this folder and chat. A Cursor Pro plan (about $20/month; check current pricing) is enough. In chat model settings, pick **Composer 2.5** at **regular** speed. That model can run setup, hunt, resume, cover letter, and fill. Cursor currently prices those tokens cheaply; prices can change.
 - **Node.js (LTS)** — builds resume and cover letter PDFs.
 - **Python 3** — saves and restores job-site login sessions so you are not signing in from scratch after every cookie wipe.
 

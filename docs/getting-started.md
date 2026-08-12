@@ -127,6 +127,6 @@ If submit is on, that check must still pass before Submit.
 
 ## Next reading
 
-- [README.md](../README.md) — what Quarry is, how a search goes, what to type, privacy
+- [README.md](../README.md) — what Quarry is, why use it, capabilities, then the search loop and what to type
 - `.cursor/skills/apply-autofill/boards/` — notes for common application hosts
 - `.cursor/skills/apply-autofill/lessons.md` — living fill notes
